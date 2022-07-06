@@ -16,10 +16,7 @@ import com.mxgraph.view.mxGraph;
 import controlador.tda.grafo.Adyacencia;
 import controlador.tda.grafo.Grafo;
 import controlador.tda.lista.ListaEnlazada;
-import controlador.tda.lista.exception.PosicionException;
 import java.awt.Dimension;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
 
 /**
