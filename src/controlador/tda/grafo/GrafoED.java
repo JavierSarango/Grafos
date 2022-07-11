@@ -25,7 +25,13 @@ public class GrafoED<E> extends GrafoD {
         dirVertices = new HashMap<>(numV);
 
     }
-
+    public Boolean modificar(E anterior, E nuevo) throws Exception{
+    Integer pos = obtenerCodigo(anterior);
+    etiquetas[pos] = nuevo;
+    dirVertices.remove(anterior);
+    dirVertices.put(nuevo, pos);
+    return  true;
+    }
     public Object[] existeArista(E i, E j) throws Exception {
         return this.existeArista(obtenerCodigo(i), obtenerCodigo(j));
     }

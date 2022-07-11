@@ -9,6 +9,7 @@ package controlador.personaNataly;
 import controlador.tda.grafo.GrafoEND;
 import modelo.Persona;
 import modelo.TipoPersona;
+import modelo.Ubicacion;
 
 /**
  *
@@ -26,6 +27,11 @@ public class PersonaGrafoController {
             p.setId(i);
             p.setNombres("Persona "+i);
             p.setTipoPersona(TipoPersona.CLIENTE);
+            Ubicacion u = new Ubicacion();
+            u.setId(i);
+            u.setLatitud(0.0);
+            u.setLongitud(0.0);
+            p.setUbicacion(u);
             gend.etiquetarVertice(i, p);
         }
     }
@@ -47,7 +53,15 @@ public class PersonaGrafoController {
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
+    public Double calcularDistancia(Persona po, Persona pd){
+    Double dis = 0.0;
+    //DIstancia = raiz cuadrada de x1 - x2 al cuadrado, más y1 - y2 al cuagrado.
+    Double y = po.getUbicacion().getLongitud() - pd.getUbicacion().getLongitud();
+    Double x = po.getUbicacion().getLatitud() - pd.getUbicacion().getLatitud();
+    dis = Math.sqrt((x*x)+(y*y));
     
+    return dis;
+    }
     
     
 }
