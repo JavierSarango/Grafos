@@ -6,6 +6,7 @@
 package vista.nataly;
 
 import controlador.personaNataly.PersonaGrafoController;
+import controlador.tda.lista.ListaEnlazada;
 import javax.swing.JOptionPane;
 import vista.nataly.modelo.ModeloTablaPersona;
 
@@ -26,6 +27,7 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         initComponents();
         jPanel2.setVisible(false);
         jPanel4.setVisible(false);
+        jPanel5.setVisible(false);
         
     }
 
@@ -35,6 +37,9 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         pgc = new PersonaGrafoController(nro);
         jPanel2.setVisible(true);
         jPanel4.setVisible(true);
+        jPanel5.setVisible(true);
+        String[] aux = {""};
+        jList1.setListData(aux);
         btnModificar.setEnabled(false);
         cargarTabla();
         cargarcbxVertices();
@@ -79,6 +84,10 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         btnVincular = new javax.swing.JButton();
         cbxdestino = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -194,10 +203,35 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         jPanel1.add(jPanel4);
         jPanel4.setBounds(10, 300, 680, 60);
 
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(10, 10, 700, 380);
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel5.setLayout(null);
 
-        setSize(new java.awt.Dimension(734, 432));
+        jButton1.setText("Camino");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel5.add(jButton1);
+        jButton1.setBounds(570, 30, 80, 30);
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList1);
+
+        jPanel5.add(jScrollPane3);
+        jScrollPane3.setBounds(10, 10, 230, 80);
+
+        jPanel1.add(jPanel5);
+        jPanel5.setBounds(10, 370, 680, 100);
+
+        getContentPane().add(jPanel1);
+        jPanel1.setBounds(10, 10, 700, 490);
+
+        setSize(new java.awt.Dimension(734, 539));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -259,6 +293,14 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnVincularActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            camino();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
     private void Limpiar() {
         txtlat.setText("");
         txtlong.setText("");
@@ -311,6 +353,28 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         }
 
     }
+    private void camino(){
+    
+     Integer origen = (cbxorigen.getSelectedIndex() + 1);
+        Integer destino = (cbxdestino.getSelectedIndex() + 1);
+        if (origen == destino) {
+            JOptionPane.showMessageDialog(null, "EScoja clientes diferentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
+        } else {
+            try {
+                ListaEnlazada<Integer> lista = pgc.getGend().caminoMinimo(origen, destino);
+               String[] aux = new String[lista.getSize()];
+                for (int i = 0; i < lista.getSize(); i++) {
+                    aux[i]= pgc.getGend().obtenerEtiqueta(lista.obtenerDato(i)).toString();
+                }
+                jList1.setListData(aux);
+               
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,e.toString(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
+    
+    }
 
     /**
      * @param args the command line arguments
@@ -361,17 +425,21 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbxdestino;
     private javax.swing.JComboBox<String> cbxnro;
     private javax.swing.JComboBox<String> cbxorigen;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable tbltabla;
     private javax.swing.JTextField txtlat;
     private javax.swing.JTextField txtlong;
