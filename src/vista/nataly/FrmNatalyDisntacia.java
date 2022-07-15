@@ -326,7 +326,7 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
                 if (pgc.getGend().modificar(pgc.getGend().obtenerEtiqueta(pos), pgc.getPersona())) {
                     cargarcbxVertices();
                     Limpiar();
-                    JOptionPane.showMessageDialog(null, "Datos MOdificados", "Exito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Datos Modificados", "Exito", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "No se pudo Modificar", "Advertencia", JOptionPane.ERROR_MESSAGE);
                 }
@@ -341,7 +341,7 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
         Integer origen = (cbxorigen.getSelectedIndex() + 1);
         Integer destino = (cbxdestino.getSelectedIndex() + 1);
         if (origen == destino) {
-            JOptionPane.showMessageDialog(null, "EScoja clientes diferentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Escoja clientes diferentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
                 Double distancia = pgc.calcularDistancia(pgc.getGend().obtenerEtiqueta(origen), pgc.getGend().obtenerEtiqueta(destino));
@@ -358,7 +358,7 @@ public class FrmNatalyDisntacia extends javax.swing.JDialog {
      Integer origen = (cbxorigen.getSelectedIndex() + 1);
         Integer destino = (cbxdestino.getSelectedIndex() + 1);
         if (origen == destino) {
-            JOptionPane.showMessageDialog(null, "EScoja clientes diferentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Escoja clientes diferentes", "Advertencia", JOptionPane.ERROR_MESSAGE);
         } else {
             try {
                 ListaEnlazada<Integer> lista = pgc.getGend().caminoMinimo(origen, destino);

@@ -4,6 +4,7 @@
  */
 package controlador.tda.grafo;
 
+import controlador.tda.cola.ColaServices;
 import controlador.tda.grafo.exception.GrafoConnectionException;
 import controlador.tda.grafo.exception.VerticeException;
 import controlador.tda.lista.ListaEnlazada;
@@ -117,8 +118,8 @@ public abstract class Grafo {
                     pesos.insertarCabecera(peso);
                     camino.insertarCabecera(T);
                     inicial = T;
-                }else{
-                throw new GrafoConnectionException("No se encuentra el camino");
+                } else {
+                    throw new GrafoConnectionException("No se encuentra el camino");
                 }
                 if (verticeFinal.intValue() == inicial.intValue()) {
                     finalizar = true;
@@ -130,4 +131,5 @@ public abstract class Grafo {
         }
         return camino;
     }
+
 }
