@@ -53,6 +53,11 @@ public class NodoArbol {
     public void setValor(Integer valor) {
         this.valor = valor;
     }
+
+    @Override
+    public String toString() {
+        return "|" + valor + "|";
+    }
     
     
 }
