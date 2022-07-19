@@ -181,6 +181,69 @@ public class Arbol {
         this.orden = orden;
     }
 
+    private void preOrden(NodoArbol arbol) throws Exception {
+        if (arbol != null) {
+            int pos = (orden.getSize() > 0) ? orden.getSize() - 1 : 0;
+            orden.insertar(arbol, pos);
+            preOrden(arbol.getIzquierda());
+            preOrden(arbol.getDerecha());
+        }
+
+    }
+
+    public ListaEnlazada<NodoArbol> preOrden() {
+        orden = new ListaEnlazada<>();
+        try {
+            preOrden(raiz);
+        } catch (Exception e) {
+            System.out.println("Error en preOrden");
+        }
+        return orden;
+    }
+
+    private void posOrden(NodoArbol arbol) throws Exception {
+        if (arbol != null) {
+            posOrden(arbol.getIzquierda());
+            posOrden(arbol.getDerecha());
+            int pos = (orden.getSize() > 0) ? orden.getSize() - 1 : 0;
+            orden.insertar(arbol, pos);
+        }
+
+    }
+
+    public ListaEnlazada<NodoArbol> posOrden() {
+        orden = new ListaEnlazada<>();
+        try {
+            posOrden(raiz);
+        } catch (Exception e) {
+            System.out.println("Error en posOrden");
+        }
+
+        return orden;
+    }
+
+    private void inOrden(NodoArbol arbol) throws Exception {
+        if (arbol != null) {
+            inOrden(arbol.getIzquierda());
+            int pos = (orden.getSize() > 0) ? orden.getSize() - 1 : 0;
+            orden.insertar(arbol, pos);
+            inOrden(arbol.getDerecha());
+
+        }
+
+    }
+
+    public ListaEnlazada<NodoArbol> inOrden() {
+        orden = new ListaEnlazada<>();
+        try {
+            inOrden(raiz);
+        } catch (Exception e) {
+            System.out.println("Error en inOrden");
+        }
+
+        return orden;
+    }
+
     public static void main(String[] args) {
         Arbol a = new Arbol();
 //        a.insertar(56);
@@ -198,41 +261,40 @@ public class Arbol {
         System.out.println("Altura: " + a.getAltura());
         System.out.println("Imprimir niveles");
         try {
-//            ListaEnlazada<NodoArbol> lista = a.getNiveles().obtenerDato(a.getNiveles().getSize()-1);
-//            a.getNiveles().imprimir();
-            for (int i = 0; i < a.getNiveles().getSize() ; i++) {
-//                a.getNiveles().obtenerDato(i).imprimir();
-                  Integer posicion = 50;
+            a.getNiveles().imprimir();
+            Integer posicion = 50;
+            for (int i = 0; i < a.getNiveles().getSize(); i++) {
+
                 ListaEnlazada<NodoArbol> aux = a.getNiveles().obtenerDato(i);
-                Integer posA= posicion / aux.getSize();
+                Integer posA = posicion / aux.getSize();
+                String cadena = a.posiciones(posA);
+                System.out.println("");
+                Integer espacios = posA;
                 for (int j = 0; j < aux.getSize(); j++) {
-                    if (aux.obtenerDato(j)!= null) {
+                    if (aux.obtenerDato(j) != null) {
+                        System.out.println(cadena + aux.obtenerDato(j) + "\t");
 //                        System.out.println(cadena+ aux.obtenerDato(j)+"\t");
+                    } else {
+                        System.out.println(cadena);
                     }
-                    
+                    espacios += espacios;
+                    cadena = a.posiciones(espacios);
+
                 }
-//                for (int j = 0; j < aux.getSize(); j++) {
-//                    if (aux.obtenerDato(j)!= null) {
-//                        System.out.print("\t"+aux.obtenerDato(j)+"\t");
-//                    }else{
-//                        System.out.println("\t");
-//                    }
-//                    
-//                }
-//                System.out.println("");
+                System.out.println("");
+
             }
         } catch (Exception e) {
+            System.out.println("Error en listado " + e);
         }
-        
-        
+
     }
-    
-//    
-//    public String posiciones(Integer aux){
-//        
-//        
-//        }
+
+    public String posiciones(Integer aux) {
+        StringBuilder cadena = new StringBuilder();
+        for (int i = 0; i < aux; i++) {
+            cadena.append(" ");
+        }
+        return cadena.toString();
+    }
 }
-
-
-
