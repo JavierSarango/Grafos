@@ -66,7 +66,7 @@ public class Reglas {
         return (lista.getSize() > 0) ? lista.getSize() - 1 : 0;
     }
     public static void main(String[] args) {
-        NodoJarras nodos = new NodoJarras(4,1);
+        NodoJarras nodos = new NodoJarras(4,0);
         ListaEnlazada<NodoJarras> reglas = Reglas.reglas(nodos.getJarraG(), nodos.getJarraP());
         reglas.imprimir();
     }
