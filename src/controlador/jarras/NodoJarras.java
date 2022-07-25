@@ -90,7 +90,7 @@ public class NodoJarras {
 
     @Override
     public String toString() {
-        return "[" + jarraG.toString() + " , " + jarraP.toString() + "]";
+        return "[" + jarraG.getCapacidad_actual().toString() + " , " + jarraP.getCapacidad_actual().toString() + "]";
     }
     
 }

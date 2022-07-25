@@ -6,16 +6,21 @@ package vista.Jarras;
 
 import controlador.jarras.ArbolJarras;
 import controlador.jarras.NodoJarras;
+import controlador.tda.lista.ListaEnlazada;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author javisarango
  */
-public class Frm_Jarras extends javax.swing.JDialog {
+public class Frm_Jarras extends javax.swing.JDialog implements Runnable {
 
     private ArbolJarras arbolJarras;
     private NodoJarras estadoI = new NodoJarras();
     private NodoJarras estadoF = new NodoJarras();
+    private ListaEnlazada<NodoJarras> camino = new ListaEnlazada<>();
+    private Thread hilo;
 
     /**
      * Creates new form Frm_Jarras
@@ -23,6 +28,7 @@ public class Frm_Jarras extends javax.swing.JDialog {
     public Frm_Jarras(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        cargarCombos();
     }
 
     private void cargarCombos() {
@@ -41,15 +47,39 @@ public class Frm_Jarras extends javax.swing.JDialog {
             cbxJPF.addItem(String.valueOf(i));
         }
     }
-    private void busqueda(){
-    estadoI = new NodoJarras(Integer.parseInt(cbxJGI.getSelectedItem().toString()),Integer.parseInt(cbxJPI.getSelectedItem().toString()));
-    estadoF = new NodoJarras(Integer.parseInt(cbxJGF.getSelectedItem().toString()),Integer.parseInt(cbxJPF.getSelectedItem().toString()));
-    arbolJarras = new ArbolJarras(estadoI, estadoF);
+
+    private void busqueda() {
+        camino = new ListaEnlazada<>();
+        estadoI = new NodoJarras(Integer.parseInt(cbxJGI.getSelectedItem().toString()),
+                Integer.parseInt(cbxJPI.getSelectedItem().toString()));
+        estadoF = new NodoJarras(Integer.parseInt(cbxJGF.getSelectedItem().toString()),
+                Integer.parseInt(cbxJPF.getSelectedItem().toString()));
+        arbolJarras = new ArbolJarras(estadoI, estadoF);
         try {
-           // NodoJarras = 
+            NodoJarras busqueda = arbolJarras.busqueda_anchura();
+            if (busqueda != null) {
+                camino = arbolJarras.camino(busqueda);
+                ejecutarHilo();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Camino no encontrado", "Lo sentimos", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (Exception e) {
         }
-    
+
+    }
+
+    private void cargarImagen(Integer jg, Integer jp) {
+        jlJarraGrande.setIcon(new ImageIcon(getClass().getResource("/vista/Jarras/img/JARRA_4_" + jg + ".gif")));
+        jlJarraPequeña.setIcon(new ImageIcon(getClass().getResource("/vista/Jarras/img/JARRA_3_" + jp + ".gif")));
+
+    }
+
+    private void cargarEstadoInicial() throws Exception {
+        Integer ei = Integer.parseInt(cbxJGI.getSelectedItem().toString());
+        Integer ef = Integer.parseInt(cbxJPI.getSelectedItem().toString());
+        cargarImagen(ei, ef);
+
     }
 
     /**
@@ -70,6 +100,14 @@ public class Frm_Jarras extends javax.swing.JDialog {
         cbxJGF = new javax.swing.JComboBox<>();
         cbxJPF = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jlJarraGrande = new javax.swing.JLabel();
+        jlJarraPequeña = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtxtCaminos = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -85,6 +123,11 @@ public class Frm_Jarras extends javax.swing.JDialog {
         jLabel1.setBounds(12, 25, 53, 27);
 
         cbxJGI.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxJGI.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxJGIItemStateChanged(evt);
+            }
+        });
         jPanel2.add(cbxJGI);
         cbxJGI.setBounds(70, 30, 70, 30);
 
@@ -93,6 +136,11 @@ public class Frm_Jarras extends javax.swing.JDialog {
         jLabel2.setBounds(230, 30, 50, 30);
 
         cbxJPI.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxJPI.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxJPIItemStateChanged(evt);
+            }
+        });
         jPanel2.add(cbxJPI);
         cbxJPI.setBounds(140, 30, 70, 30);
 
@@ -104,12 +152,49 @@ public class Frm_Jarras extends javax.swing.JDialog {
         jPanel2.add(cbxJPF);
         cbxJPF.setBounds(360, 30, 72, 30);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Busqueda");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton1);
-        jButton1.setBounds(450, 30, 78, 23);
+        jButton1.setBounds(450, 30, 90, 30);
 
         jPanel1.add(jPanel2);
         jPanel2.setBounds(10, 10, 560, 80);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Animaciones"));
+        jPanel3.setLayout(null);
+        jPanel3.add(jlJarraGrande);
+        jlJarraGrande.setBounds(10, 60, 160, 190);
+        jPanel3.add(jlJarraPequeña);
+        jlJarraPequeña.setBounds(180, 60, 150, 190);
+
+        jLabel5.setText("CAMINO");
+        jPanel3.add(jLabel5);
+        jLabel5.setBounds(390, 30, 120, 20);
+
+        jLabel6.setText("JARRA GRANDE");
+        jPanel3.add(jLabel6);
+        jLabel6.setBounds(20, 30, 120, 20);
+
+        jtxtCaminos.setEditable(false);
+        jtxtCaminos.setColumns(20);
+        jtxtCaminos.setRows(5);
+        jtxtCaminos.setWrapStyleWord(true);
+        jtxtCaminos.setEnabled(false);
+        jScrollPane1.setViewportView(jtxtCaminos);
+
+        jPanel3.add(jScrollPane1);
+        jScrollPane1.setBounds(354, 60, 190, 190);
+
+        jLabel7.setText("JARRA PEQUEÑA");
+        jPanel3.add(jLabel7);
+        jLabel7.setBounds(160, 30, 120, 20);
+
+        jPanel1.add(jPanel3);
+        jPanel3.setBounds(10, 100, 560, 270);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 580, 380);
@@ -118,6 +203,53 @@ public class Frm_Jarras extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        busqueda();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cbxJGIItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxJGIItemStateChanged
+        // TODO add your handling code here:
+        try {
+            cargarEstadoInicial();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_cbxJGIItemStateChanged
+
+    private void cbxJPIItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxJPIItemStateChanged
+        // TODO add your handling code here:
+        try {
+            cargarEstadoInicial();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_cbxJPIItemStateChanged
+
+    @Override
+    public void run() {
+        jButton1.setEnabled(false);
+        jtxtCaminos.setText("");
+        if (!camino.estaVacia()) {
+            try {
+                NodoJarras[] arreglo = camino.toArray();
+                for (int i = 0; i < arreglo.length; i++) {
+                    NodoJarras aux = arreglo[i];
+                    jtxtCaminos.setText(jtxtCaminos.getText()+("JG: "+aux.getJarraG().getCapacidad_actual()+" JP: "+aux.getJarraP().getCapacidad_actual())+"\n");
+                    jlJarraGrande.setIcon(new ImageIcon(getClass().getResource("/vista/Jarras/img/JARRA_4_" + aux.getJarraG().getCapacidad_actual() + ".gif")));
+                    jlJarraPequeña.setIcon(new ImageIcon(getClass().getResource("/vista/Jarras/img/JARRA_3_" + aux.getJarraP().getCapacidad_actual() + ".gif")));
+                    Thread.sleep(2000);
+                }
+            } catch (Exception e) {
+              jButton1.setEnabled(true);  
+            }
+        }
+
+        jButton1.setEnabled(true);
+    }
+    private void ejecutarHilo(){
+    hilo = new Thread(this);
+    hilo.start();
+    
+    }
     /**
      * @param args the command line arguments
      */
@@ -168,7 +300,15 @@ public class Frm_Jarras extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jlJarraGrande;
+    private javax.swing.JLabel jlJarraPequeña;
+    private javax.swing.JTextArea jtxtCaminos;
     // End of variables declaration//GEN-END:variables
 }
